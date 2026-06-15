@@ -1,0 +1,63 @@
+/* Black Stars — icon set (stroke, 24-grid). Exported to window.Icon */
+const Ic = ({ d, fill, vb = "0 0 24 24", sw = 1.7, children, ...p }) => (
+  <svg viewBox={vb} fill={fill || "none"} stroke={fill ? "none" : "currentColor"}
+       strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" {...p}>
+    {d ? <path d={d} /> : children}
+  </svg>
+);
+
+const Icon = {
+  dashboard: (p) => <Ic {...p}><path d="M4 13h6V4H4zM14 20h6v-9h-6zM14 8h6V4h-6zM4 20h6v-3H4z"/></Ic>,
+  stock: (p) => <Ic {...p}><path d="M5 8l7-4 7 4v8l-7 4-7-4z"/><path d="M5 8l7 4 7-4M12 12v8"/></Ic>,
+  income: (p) => <Ic {...p}><path d="M3 17l5-5 3 3 5-6 5 4"/><path d="M16 9h5v5" /></Ic>,
+  expenses: (p) => <Ic {...p}><path d="M3 7l5 5 3-3 5 6 5-4"/><path d="M16 15h5v-5"/></Ic>,
+  credit: (p) => <Ic {...p}><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 14.5h4"/></Ic>,
+  staff: (p) => <Ic {...p}><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.8M20.5 19a5 5 0 0 0-3.5-4.7"/></Ic>,
+  reports: (p) => <Ic {...p}><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13l2 2 3-4"/></Ic>,
+  settings: (p) => <Ic {...p}><circle cx="12" cy="12" r="3"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l1.7-1.3-1.7-3-2 .8a7.6 7.6 0 0 0-2.6-1.5L14.2 3H9.8l-.3 2a7.6 7.6 0 0 0-2.6 1.5l-2-.8-1.7 3L4.9 10a7.6 7.6 0 0 0 0 3l-1.7 1.3 1.7 3 2-.8A7.6 7.6 0 0 0 9.5 21l.3 2h4.4l.3-2a7.6 7.6 0 0 0 2.6-1.5l2 .8 1.7-3z"/></Ic>,
+  more: (p) => <Ic {...p}><circle cx="5" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.4" fill="currentColor" stroke="none"/></Ic>,
+  sparkles: (p) => <Ic {...p}><path d="M12 3l1.7 4.8L18.5 9.5 13.7 11.2 12 16l-1.7-4.8L5.5 9.5l4.8-1.7zM19 14l.8 2.2 2.2.8-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"/></Ic>,
+  search: (p) => <Ic {...p}><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></Ic>,
+  globe: (p) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></Ic>,
+  chevDown: (p) => <Ic {...p}><path d="m6 9 6 6 6-6"/></Ic>,
+  chevRight: (p) => <Ic {...p}><path d="m9 6 6 6-6 6"/></Ic>,
+  chevLeft: (p) => <Ic {...p}><path d="m15 6-6 6 6 6"/></Ic>,
+  check: (p) => <Ic {...p}><path d="m5 12 4.5 4.5L19 7"/></Ic>,
+  checkCircle: (p) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></Ic>,
+  bell: (p) => <Ic {...p}><path d="M18 9a6 6 0 1 0-12 0c0 5-2 6-2 6h16s-2-1-2-6M10 20a2 2 0 0 0 4 0"/></Ic>,
+  plus: (p) => <Ic {...p}><path d="M12 5v14M5 12h14"/></Ic>,
+  arrowUp: (p) => <Ic {...p}><path d="M12 19V5M6 11l6-6 6 6"/></Ic>,
+  arrowDown: (p) => <Ic {...p}><path d="M12 5v14M6 13l6 6 6-6"/></Ic>,
+  trendUp: (p) => <Ic {...p}><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></Ic>,
+  download: (p) => <Ic {...p}><path d="M12 3v12M7 11l5 5 5-5M5 21h14"/></Ic>,
+  send: (p) => <Ic {...p}><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></Ic>,
+  phone: (p) => <Ic {...p}><path d="M6 3h3l1.5 5-2 1.5a12 12 0 0 0 5 5l1.5-2 5 1.5V18a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2"/></Ic>,
+  wallet: (p) => <Ic {...p}><rect x="3" y="5.5" width="18" height="14" rx="2.5"/><path d="M3 10h18M16.5 15h.01"/></Ic>,
+  cash: (p) => <Ic {...p}><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5h.01M18 14.5h.01"/></Ic>,
+  card: (p) => <Ic {...p}><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 9.5h19M6 15h3"/></Ic>,
+  clock: (p) => <Ic {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></Ic>,
+  users: (p) => <Ic {...p}><circle cx="9" cy="8" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.5a3 3 0 0 1 0 5.8M20.5 19a5 5 0 0 0-3.5-4.7"/></Ic>,
+  bottle: (p) => <Ic {...p}><path d="M10 2h4M10.5 2v3l-1.5 3v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V8l-1.5-3V2"/><path d="M9 13h6"/></Ic>,
+  warn: (p) => <Ic {...p}><path d="M12 3 2 20h20zM12 9v5M12 17h.01"/></Ic>,
+  beer: (p) => <Ic {...p}><path d="M6 5h9v14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2zM15 8h2.5a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2H15M9 9v8M12 9v8"/></Ic>,
+  music: (p) => <Ic {...p}><path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></Ic>,
+  shield: (p) => <Ic {...p}><path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/></Ic>,
+  bolt: (p) => <Ic {...p}><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></Ic>,
+  receipt: (p) => <Ic {...p}><path d="M5 3h14v18l-2.5-1.5L14 21l-2-1.5L10 21l-2.5-1.5L5 21zM9 8h6M9 12h6"/></Ic>,
+  smoke: (p) => <Ic {...p}><rect x="2.5" y="13" width="16" height="5" rx="1"/><path d="M16 13v5M6 13v5M14 9c0-1.5-1.5-1.5-1.5-3M18 9c0-1.5-1.5-1.5-1.5-3M21 16h.5a1.5 1.5 0 0 0 0-3"/></Ic>,
+  door: (p) => <Ic {...p}><path d="M5 21V4a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v17M5 21h13M14 12h.01"/></Ic>,
+  whatsapp: (p) => <Ic {...p} fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2m0 1.8a8.2 8.2 0 0 1 4 15.3l-.4.2-2.8.7.7-2.7-.3-.4A8.2 8.2 0 0 1 12 3.8m-2.7 3.6c-.2 0-.5 0-.7.4-.2.4-.9.9-.9 2.1s.9 2.5 1 2.6c.1.2 1.7 2.8 4.3 3.8 2.2.8 2.6.7 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.6-.3-1.5-.7c-.2-.1-.4-.1-.5.1l-.7.9c-.1.2-.3.2-.5.1-.6-.2-1.4-.5-2.2-1.3-.6-.6-1-1.3-1.2-1.5-.1-.2 0-.4.1-.5l.4-.4.2-.4v-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4z"/></Ic>,
+  close: (p) => <Ic {...p}><path d="M6 6l12 12M18 6 6 18"/></Ic>,
+  filter: (p) => <Ic {...p}><path d="M3 5h18l-7 8v6l-4-2v-4z"/></Ic>,
+  dots: (p) => <Ic {...p}><circle cx="12" cy="5" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.4" fill="currentColor" stroke="none"/></Ic>,
+  logout: (p) => <Ic {...p}><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H3"/></Ic>,
+  pin: (p) => <Ic {...p}><path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11"/><circle cx="12" cy="10" r="2.5"/></Ic>,
+  calendar: (p) => <Ic {...p}><rect x="3.5" y="4.5" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M8 3v3M16 3v3"/></Ic>,
+  star: (p) => <Ic {...p} fill="currentColor" stroke="none"><path d="m12 2 2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></Ic>,
+  truck: (p) => <Ic {...p}><path d="M2.5 6h11v9h-11zM13.5 9h4l3 3v3h-7"/><circle cx="6.5" cy="18" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/></Ic>,
+  flame: (p) => <Ic {...p}><path d="M12 2s5 4 5 9a5 5 0 0 1-10 0c0-1.5.7-2.8 1.5-3.5C8.5 9 9 11 10 11c0-3 2-5 2-9"/></Ic>,
+  sun: (p) => <Ic {...p}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></Ic>,
+  moon: (p) => <Ic {...p}><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></Ic>,
+  circle: (p) => <Ic {...p}><circle cx="12" cy="12" r="8"/></Ic>,
+};
+window.Icon = Icon;
