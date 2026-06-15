@@ -67,8 +67,48 @@ function Credit({ toast }) {
   );
 }
 
-/* ============ STAFF ============ */
-function Staff({ toast }) {
+/* ============ STAFF — advance modal (shared: permanent + casuals) ============ */
+function AdvanceModal({ staff, onClose, onSave, toast }) {
+  const { t } = useT();
+  const cur = DATA.meta.currency;
+  const fmtNum = (v) => v ? Number(v).toLocaleString("en-US") : "";
+  const [amount, setAmount] = useStateB("");
+  const amt = parseInt(amount || "0", 10);
+  const valid = amt > 0;
+  const submit = () => {
+    if (!valid) return;
+    onSave(amt);
+    toast(t("advanceRecorded") + " · " + staff.name);
+    onClose();
+  };
+  return (
+    <div className="modal-wrap">
+      <div className="scrim" onClick={onClose} />
+      <div className="modal">
+        <div className="modal-head between">
+          <div className="row" style={{ gap: 12 }}>
+            <span className="av" style={{ background: avatarColor(staff.name) }}>{initials(staff.name)}</span>
+            <div><div style={{ fontFamily: "var(--disp)", fontWeight: 600, fontSize: 17 }}>{staff.name}</div><div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{t(staff.role)}</div></div>
+          </div>
+          <button className="iconbtn" style={{ width: 34, height: 34 }} onClick={onClose}><Icon.close /></button>
+        </div>
+        <div className="modal-body">
+          <div className="field">
+            <label>{t("advanceAmount")}</label>
+            <div className="amount-input"><span className="cur">{cur}</span><input autoFocus inputMode="numeric" placeholder="0" value={fmtNum(amount)} onChange={e => setAmount(e.target.value.replace(/[^0-9]/g, ""))} /></div>
+          </div>
+        </div>
+        <div className="modal-foot">
+          <button className="btn ghost" style={{ flex: 1 }} onClick={onClose}>{t("cancel")}</button>
+          <button className="btn gold" style={{ flex: 2, opacity: valid ? 1 : .45, pointerEvents: valid ? "auto" : "none" }} onClick={submit}><Icon.check /> {t("saveAdvance")}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============ STAFF — tonight's roster ============ */
+function StaffTonight({ toast }) {
   const { t } = useT();
   const present = DATA.staff.filter(s => s.status === "present");
   const wageCost = present.filter(s => !s.isFee).reduce((s, x) => s + x.wage, 0);
@@ -76,7 +116,7 @@ function Staff({ toast }) {
   const djFee = DATA.staff.find(s => s.isFee);
 
   return (
-    <Page>
+    <React.Fragment>
       <div className="cols4">
         <div className="card card-pad"><Stat label={t("onShift")} icon="staff" color="var(--green)" value={present.length} cur={false} size={28} foot={"/ " + DATA.staff.length} /></div>
         <div className="card card-pad"><Stat label={t("wageCost")} icon="wallet" color="var(--gold)" value={wageCost} size={26} /></div>
@@ -109,6 +149,176 @@ function Staff({ toast }) {
           </table>
         </div>
       </div>
+    </React.Fragment>
+  );
+}
+
+/* ============ STAFF — permanent payroll ============ */
+function StaffPermanent({ toast }) {
+  const { t } = useT();
+  const [advances, setAdvances] = useStateB({});
+  const [advanceTarget, setAdvanceTarget] = useStateB(null);
+
+  const rows = DATA.staffPermanent.map(s => {
+    const advance = s.advance + (advances[s.name] || 0);
+    const deductions = s.nhif + s.nssf + s.paye + advance;
+    return { ...s, advance, deductions, net: s.salary - deductions };
+  });
+  const totalGross = rows.reduce((s, r) => s + r.salary, 0);
+  const totalDeductions = rows.reduce((s, r) => s + r.deductions, 0);
+  const totalAdvances = rows.reduce((s, r) => s + r.advance, 0);
+  const totalNet = rows.reduce((s, r) => s + r.net, 0);
+  const giveAdvance = (amt) => setAdvances(a => ({ ...a, [advanceTarget.name]: (a[advanceTarget.name] || 0) + amt }));
+
+  return (
+    <React.Fragment>
+      <div className="cols4">
+        <div className="card card-pad"><Stat label={t("monthlyPayroll")} icon="wallet" color="var(--gold)" value={totalGross} size={26} /></div>
+        <div className="card card-pad"><Stat label={t("totalDeductions")} icon="receipt" color="var(--red)" value={totalDeductions} size={26} /></div>
+        <div className="card card-pad"><Stat label={t("outstandingAdvances")} icon="cash" color="var(--blue)" value={totalAdvances} size={26} /></div>
+        <div className="card card-pad"><Stat label={t("netPayable")} icon="banknote" color="var(--green)" value={totalNet} size={26} /></div>
+      </div>
+
+      <div className="card card-pad">
+        <CardTitle icon="users" color="var(--gold)" title={t("tabPermanent")} />
+        <div style={{ overflowX: "auto" }}>
+          <table className="tbl">
+            <thead><tr>
+              <th>{t("name")}</th>
+              <th className="hide-mobile">{t("role")}</th>
+              <th style={{ textAlign: "end" }}>{t("grossPay")}</th>
+              <th className="hide-mobile" style={{ textAlign: "end" }}>{t("nhif")}</th>
+              <th className="hide-mobile" style={{ textAlign: "end" }}>{t("nssf")}</th>
+              <th className="hide-mobile" style={{ textAlign: "end" }}>{t("paye")}</th>
+              <th style={{ textAlign: "end" }}>{t("advance")}</th>
+              <th style={{ textAlign: "end" }}>{t("netPay")}</th>
+              <th style={{ textAlign: "end" }}></th>
+            </tr></thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  <td><div className="row" style={{ gap: 11 }}><span className="av" style={{ background: avatarColor(r.name) }}>{initials(r.name)}</span><div><div className="r-name">{r.name}</div><div className="r-sub only-mobile" style={{ display: "block" }}>{t(r.role)}</div></div></div></td>
+                  <td className="hide-mobile"><span className="chip" style={{ color: ROLE[r.role], background: softBg(ROLE[r.role]), borderColor: softBg(ROLE[r.role]) }}>{t(r.role)}</span></td>
+                  <td style={{ textAlign: "end" }}><span className="num"><Money v={r.salary} /></span></td>
+                  <td className="hide-mobile" style={{ textAlign: "end" }}><span className="num muted"><Money v={r.nhif} /></span></td>
+                  <td className="hide-mobile" style={{ textAlign: "end" }}><span className="num muted"><Money v={r.nssf} /></span></td>
+                  <td className="hide-mobile" style={{ textAlign: "end" }}><span className="num muted"><Money v={r.paye} /></span></td>
+                  <td style={{ textAlign: "end" }}>{r.advance > 0 ? <span className="num neg"><Money v={r.advance} /></span> : <span className="muted">—</span>}</td>
+                  <td style={{ textAlign: "end" }}><span className="num" style={{ fontWeight: 700 }}><Money v={r.net} /></span></td>
+                  <td style={{ textAlign: "end" }}><button className="btn ghost sm" onClick={() => setAdvanceTarget(r)}>{t("giveAdvance")}</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {advanceTarget && <AdvanceModal staff={advanceTarget} onClose={() => setAdvanceTarget(null)} onSave={giveAdvance} toast={toast} />}
+    </React.Fragment>
+  );
+}
+
+/* ============ STAFF — casuals payroll + POS integration ============ */
+function StaffCasuals({ toast }) {
+  const { t } = useT();
+  const cur = DATA.meta.currency;
+  const [advances, setAdvances] = useStateB({});
+  const [advanceTarget, setAdvanceTarget] = useStateB(null);
+
+  const rows = DATA.staffCasuals.map(s => {
+    const base = s.dailyRate * s.daysWorked;
+    const commission = Math.round(s.posSales * s.commissionPct / 100);
+    const gross = base + commission;
+    const advance = s.advance + (advances[s.name] || 0);
+    return { ...s, base, commission, gross, advance, net: gross - s.deduction - advance };
+  });
+  const totalWageBill = rows.reduce((s, r) => s + r.gross, 0);
+  const totalCommission = rows.reduce((s, r) => s + r.commission, 0);
+  const totalDeductions = rows.reduce((s, r) => s + r.deduction + r.advance, 0);
+  const totalNet = rows.reduce((s, r) => s + r.net, 0);
+  const linked = rows.filter(r => r.posLinked);
+  const giveAdvance = (amt) => setAdvances(a => ({ ...a, [advanceTarget.name]: (a[advanceTarget.name] || 0) + amt }));
+
+  return (
+    <React.Fragment>
+      <div className="cols4">
+        <div className="card card-pad"><Stat label={t("casualWageBill")} icon="wallet" color="var(--gold)" value={totalWageBill} size={26} /></div>
+        <div className="card card-pad"><Stat label={t("commissionEarned")} icon="terminal" color="var(--mpesa)" value={totalCommission} size={26} foot={linked.length + " " + t("posLinked").toLowerCase()} /></div>
+        <div className="card card-pad"><Stat label={t("totalDeductions")} icon="receipt" color="var(--red)" value={totalDeductions} size={26} /></div>
+        <div className="card card-pad"><Stat label={t("netPayable")} icon="banknote" color="var(--green)" value={totalNet} size={26} /></div>
+      </div>
+
+      <div className="card card-pad">
+        <CardTitle icon="users" color="var(--gold)" title={t("tabCasuals")} />
+        <div style={{ overflowX: "auto" }}>
+          <table className="tbl">
+            <thead><tr>
+              <th>{t("name")}</th>
+              <th className="hide-mobile">{t("role")}</th>
+              <th style={{ textAlign: "end" }}>{t("dailyRate")}</th>
+              <th className="hide-mobile" style={{ textAlign: "end" }}>{t("daysWorked")}</th>
+              <th className="hide-mobile" style={{ textAlign: "end" }}>{t("commission")}</th>
+              <th style={{ textAlign: "end" }}>{t("advance")}</th>
+              <th style={{ textAlign: "end" }}>{t("netPay")}</th>
+              <th style={{ textAlign: "end" }}></th>
+            </tr></thead>
+            <tbody>
+              {rows.map((r, i) => (
+                <tr key={i}>
+                  <td><div className="row" style={{ gap: 11 }}><span className="av" style={{ background: avatarColor(r.name) }}>{initials(r.name)}</span><div><div className="r-name">{r.name}</div><div className="r-sub only-mobile" style={{ display: "block" }}>{t(r.role)}</div></div></div></td>
+                  <td className="hide-mobile"><span className="chip" style={{ color: ROLE[r.role], background: softBg(ROLE[r.role]), borderColor: softBg(ROLE[r.role]) }}>{t(r.role)}</span></td>
+                  <td style={{ textAlign: "end" }}><span className="num"><Money v={r.dailyRate} /></span></td>
+                  <td className="hide-mobile" style={{ textAlign: "end" }}><span className="num muted">{r.daysWorked}</span></td>
+                  <td className="hide-mobile" style={{ textAlign: "end" }}>{r.posLinked ? <span className="num pos">+<Money v={r.commission} /></span> : <span className="muted">—</span>}</td>
+                  <td style={{ textAlign: "end" }}>{r.advance > 0 ? <span className="num neg"><Money v={r.advance} /></span> : <span className="muted">—</span>}</td>
+                  <td style={{ textAlign: "end" }}><span className="num" style={{ fontWeight: 700 }}><Money v={r.net} /></span></td>
+                  <td style={{ textAlign: "end" }}><button className="btn ghost sm" onClick={() => setAdvanceTarget(r)}>{t("giveAdvance")}</button></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="card card-pad">
+        <div className="between" style={{ marginBottom: 6 }}>
+          <CardTitle icon="terminal" color="var(--mpesa)" title={t("livePosFeed")} />
+          <span className="chip green"><span className="live-dot" /> {t("live")}</span>
+        </div>
+        <div className="muted" style={{ fontSize: 12.5, marginBottom: 4 }}>{t("posIntegrationDesc")}</div>
+        <div className="list">
+          {DATA.posFeed.map((f, i) => (
+            <div className="li" key={i}>
+              <IcChip name="terminal" color="var(--mpesa)" />
+              <div className="gr"><div className="t1">{f.staff}</div><div className="t2">{f.table} · {f.t} · {t("syncedViaPos")}</div></div>
+              <div style={{ textAlign: "end" }}>
+                <div className="num" style={{ fontWeight: 600 }}><Money v={f.amt} /></div>
+                <div className="muted num" style={{ fontSize: 11, marginTop: 2 }}>+{cur} {f.commission} {t("commission").toLowerCase()}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {advanceTarget && <AdvanceModal staff={advanceTarget} onClose={() => setAdvanceTarget(null)} onSave={giveAdvance} toast={toast} />}
+    </React.Fragment>
+  );
+}
+
+/* ============ STAFF ============ */
+function Staff({ toast }) {
+  const { t } = useT();
+  const [tab, setTab] = useStateB("tonight");
+
+  return (
+    <Page>
+      <div className="between" style={{ flexWrap: "wrap", gap: 12 }}>
+        <span className="chip gold"><Icon.calendar style={{ width: 13, height: 13 }} /> {DATA.meta.night} · {t("live")}</span>
+        <Seg value={tab} onChange={setTab} options={[{ k: "tonight", label: t("tabTonight") }, { k: "permanent", label: t("tabPermanent") }, { k: "casuals", label: t("tabCasuals") }]} />
+      </div>
+      {tab === "tonight" && <StaffTonight toast={toast} />}
+      {tab === "permanent" && <StaffPermanent toast={toast} />}
+      {tab === "casuals" && <StaffCasuals toast={toast} />}
     </Page>
   );
 }

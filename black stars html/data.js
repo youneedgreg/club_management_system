@@ -176,4 +176,80 @@ window.DATA = {
       ] },
     ],
   },
+
+  // ---------- Kitchen — food side (income + expenses, separate from the bar) ----------
+  kitchen: {
+    incomeByCategory: [
+      { key: "grills", v: 86000 },
+      { key: "mainCourse", v: 64000 },
+      { key: "snacksSides", v: 38000 },
+      { key: "soupsStews", v: 21000 },
+      { key: "desserts", v: 9000 },
+    ],
+    byHour: [
+      { h: "8pm", v: 6000 }, { h: "9pm", v: 14000 }, { h: "10pm", v: 27000 },
+      { h: "11pm", v: 45000 }, { h: "12am", v: 57000 }, { h: "1am", v: 40000 },
+      { h: "2am", v: 21000 }, { h: "3am", v: 8000 },
+    ],
+    orders: [
+      { t: "02:05", table: "Table 7", item: "Beef short ribs + fries", qty: 1, amt: 2800, status: "served" },
+      { t: "01:48", table: "Table 3", item: "Grilled tilapia + ugali", qty: 2, amt: 3600, status: "served" },
+      { t: "01:30", table: "Bar", item: "Loaded nachos", qty: 3, amt: 2700, status: "served" },
+      { t: "01:10", table: "Table 12", item: "Chicken wings (1kg)", qty: 1, amt: 1800, status: "served" },
+      { t: "00:52", table: "Table 9", item: "Beef samosas (6pc)", qty: 2, amt: 1200, status: "served" },
+      { t: "00:35", table: "Table 5", item: "Pilau + beef stew", qty: 2, amt: 2400, status: "preparing" },
+    ],
+    expensesToday: [
+      { label: "Meat & poultry — Capwell Meats", cat: "ingredients", amt: 32000, recurring: true, t: "3:00 PM" },
+      { label: "Fresh produce — Greenspoon", cat: "ingredients", amt: 18000, recurring: false, t: "4:30 PM" },
+      { label: "Cooking gas refill", cat: "gas", amt: 6500, recurring: false, t: "5:00 PM" },
+      { label: "Kitchen staff wages", cat: "kitchenWages", amt: 12000, recurring: true, t: "7:30 PM" },
+      { label: "Takeaway packaging", cat: "packaging", amt: 3200, recurring: false, t: "6:00 PM" },
+    ],
+    expenseByCategory: [
+      { key: "ingredients", v: 620000 },
+      { key: "kitchenWages", v: 240000 },
+      { key: "gas", v: 48000 },
+      { key: "packaging", v: 36000 },
+      { key: "maintenance", v: 28000 },
+    ],
+  },
+
+  // ---------- Suppliers — accounts payable (what Black Stars owes them) ----------
+  suppliers: [
+    { name: "Kenya Breweries (EABL)", category: "drinks", owed: 145000, lastOrder: "13 Jun", dueDate: "20 Jun", terms: "7 days", phone: "+254 7•• ••• 100", age: 2 },
+    { name: "Maxam Distributors", category: "drinks", owed: 86000, lastOrder: "10 Jun", dueDate: "17 Jun", terms: "7 days", phone: "+254 7•• ••• 220", age: 5 },
+    { name: "Wines of the World", category: "drinks", owed: 54000, lastOrder: "6 Jun", dueDate: "13 Jun", terms: "7 days", phone: "+254 7•• ••• 330", age: 9 },
+    { name: "Naivas Wholesale", category: "drinks", owed: 21000, lastOrder: "12 Jun", dueDate: "19 Jun", terms: "7 days", phone: "+254 7•• ••• 440", age: 3 },
+    { name: "Greenspoon Fresh Produce", category: "food", owed: 38000, lastOrder: "14 Jun", dueDate: "21 Jun", terms: "7 days", phone: "+254 7•• ••• 550", age: 1 },
+    { name: "Capwell Meats", category: "food", owed: 62000, lastOrder: "12 Jun", dueDate: "19 Jun", terms: "7 days", phone: "+254 7•• ••• 660", age: 3 },
+    { name: "Pro Gas Kenya", category: "utilities", owed: 13000, lastOrder: "9 Jun", dueDate: "16 Jun", terms: "30 days", phone: "+254 7•• ••• 770", age: 6 },
+    { name: "Securex Security Services", category: "services", owed: 18000, lastOrder: "1 Jun", dueDate: "15 Jun", terms: "Monthly", phone: "+254 7•• ••• 880", age: 14 },
+  ],
+
+  // ---------- Staff — permanent (monthly salary, statutory deductions, advances) ----------
+  staffPermanent: [
+    { name: "Faith Achieng", role: "supervisor", salary: 45000, nhif: 1700, nssf: 1080, paye: 4250, advance: 5000, status: "pending" },
+    { name: "Mercy Wanjiru", role: "cashier", salary: 32000, nhif: 1700, nssf: 1080, paye: 2100, advance: 0, status: "paid" },
+    { name: "Brian Otieno", role: "bartender", salary: 28000, nhif: 1700, nssf: 1080, paye: 1450, advance: 3000, status: "pending" },
+    { name: "Kevin Kamau", role: "bartender", salary: 28000, nhif: 1700, nssf: 1080, paye: 1450, advance: 0, status: "paid" },
+    { name: "James Mwangi", role: "securityRole", salary: 26000, nhif: 1700, nssf: 1080, paye: 1150, advance: 0, status: "paid" },
+  ],
+
+  // ---------- Staff — casuals (daily wage, deductions, POS-linked commission) ----------
+  staffCasuals: [
+    { name: "Cynthia Njeri", role: "waiter", dailyRate: 1500, daysWorked: 5, deduction: 200, advance: 1000, posLinked: true, posSales: 86000, commissionPct: 1 },
+    { name: "Otieno Junior", role: "waiter", dailyRate: 1500, daysWorked: 4, deduction: 200, advance: 0, posLinked: true, posSales: 52000, commissionPct: 1 },
+    { name: "Hassan Ali", role: "securityRole", dailyRate: 1800, daysWorked: 6, deduction: 0, advance: 0, posLinked: false, posSales: 0, commissionPct: 0 },
+    { name: "Grace Mwende", role: "bartender", dailyRate: 1700, daysWorked: 5, deduction: 200, advance: 2000, posLinked: true, posSales: 134000, commissionPct: 1.5 },
+    { name: "Peter Omondi", role: "waiter", dailyRate: 1500, daysWorked: 3, deduction: 0, advance: 0, posLinked: true, posSales: 28000, commissionPct: 1 },
+  ],
+
+  // Live POS feed — sample of sales auto-attributed to casual staff tonight
+  posFeed: [
+    { t: "02:14", staff: "Grace Mwende", table: "Table 7", amt: 16500, commission: 248 },
+    { t: "01:51", staff: "Cynthia Njeri", table: "Table 3", amt: 19200, commission: 192 },
+    { t: "01:22", staff: "Otieno Junior", table: "Table 12", amt: 10300, commission: 103 },
+    { t: "00:55", staff: "Peter Omondi", table: "Table 5", amt: 8700, commission: 87 },
+  ],
 };

@@ -6,14 +6,16 @@ const NAV = [
   { k: "stock", ic: "stock", badge: "low" },
   { k: "income", ic: "income" },
   { k: "expenses", ic: "expenses" },
+  { k: "kitchen", ic: "pot" },
   { k: "lineup", ic: "calendar" },
   { k: "credit", ic: "credit", badge: "overdue" },
+  { k: "payables", ic: "banknote" },
   { k: "staff", ic: "staff" },
   { k: "reports", ic: "reports" },
   { k: "settings", ic: "settings" },
 ];
 const PRIMARY = ["dashboard", "stock", "income", "expenses"];
-const MODULES = { dashboard: Dashboard, stock: BarStock, income: Income, expenses: Expenses, lineup: Lineup, credit: Credit, staff: Staff, reports: Reports, settings: Settings };
+const MODULES = { dashboard: Dashboard, stock: BarStock, income: Income, expenses: Expenses, kitchen: Kitchen, lineup: Lineup, credit: Credit, payables: Suppliers, staff: Staff, reports: Reports, settings: Settings };
 
 const lowCount = DATA.stock.filter(s => s.onHand < s.par).length;
 const overdueCount = DATA.credit.filter(c => c.age > 7).length;

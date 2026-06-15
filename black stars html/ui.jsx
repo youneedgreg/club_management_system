@@ -43,6 +43,26 @@ const ROLE = {
   supervisor: "var(--gold)", cashier: "var(--blue)", bartender: "var(--green)",
   waiter: "#5fd0c4", securityRole: "var(--red)", dj: "var(--violet)",
 };
+const KCAT = {
+  grills: { c: "var(--red)", ic: "flame" },
+  mainCourse: { c: "var(--gold)", ic: "pot" },
+  snacksSides: { c: "var(--green)", ic: "receipt" },
+  soupsStews: { c: "var(--blue)", ic: "pot" },
+  desserts: { c: "var(--violet)", ic: "sparkles" },
+};
+const KECAT = {
+  ingredients: { c: "var(--green)", ic: "pot" },
+  kitchenWages: { c: "var(--gold)", ic: "users" },
+  gas: { c: "var(--red)", ic: "flame" },
+  packaging: { c: "#5fd0c4", ic: "receipt" },
+  maintenance: { c: "var(--violet)", ic: "settings" },
+};
+const SCAT = {
+  drinks: { c: "var(--blue)", ic: "bottle" },
+  food: { c: "var(--green)", ic: "pot" },
+  utilities: { c: "var(--gold)", ic: "bolt" },
+  services: { c: "var(--violet)", ic: "shield" },
+};
 const avatarColor = (name) => {
   const cols = ["#ecbb4e", "#6aa6ff", "#3fd6a0", "#b591ff", "#ff8f6f", "#5fd0c4", "#54c265"];
   let s = 0; for (const ch of name) s += ch.charCodeAt(0);
@@ -209,6 +229,6 @@ const Grid = ({ min = 240, gap = 16, children, style }) => (
 const Page = ({ children }) => <div className="fade-pg stack">{children}</div>;
 
 Object.assign(window, {
-  I18nContext, useT, money, moneyK, softBg, CAT, PAY, ECAT, ROLE, avatarColor, initials,
+  I18nContext, useT, money, moneyK, softBg, CAT, PAY, ECAT, ROLE, KCAT, KECAT, SCAT, avatarColor, initials,
   Money, Delta, IcChip, CardTitle, SectionH, Stat, Progress, Donut, Legend, BarChart, WeekBars, Spark, Seg, Toast, Grid, Page,
 });

@@ -253,11 +253,11 @@ function Income({ toast }) {
 }
 
 /* ============ EXPENSES ============ */
-function ExpenseForm({ onClose, onSave }) {
+function ExpenseForm({ onClose, onSave, catMap = ECAT, defaultCat, title }) {
   const { t } = useT();
-  const cats = Object.keys(ECAT);
+  const cats = Object.keys(catMap);
   const [amount, setAmount] = useStateA("");
-  const [cat, setCat] = useStateA("suppliers");
+  const [cat, setCat] = useStateA(defaultCat || cats[0]);
   const [desc, setDesc] = useStateA("");
   const [pay, setPay] = useStateA("mpesa");
   const [recur, setRecur] = useStateA(false);
@@ -274,7 +274,7 @@ function ExpenseForm({ onClose, onSave }) {
         <div className="modal-head between">
           <div className="row" style={{ gap: 12 }}>
             <IcChip name="expenses" color="var(--red)" />
-            <div><div style={{ fontFamily: "var(--disp)", fontWeight: 600, fontSize: 17 }}>{t("newExpense")}</div><div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{DATA.meta.night}</div></div>
+            <div><div style={{ fontFamily: "var(--disp)", fontWeight: 600, fontSize: 17 }}>{title || t("newExpense")}</div><div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{DATA.meta.night}</div></div>
           </div>
           <button className="iconbtn" style={{ width: 34, height: 34 }} onClick={onClose}><Icon.close /></button>
         </div>
@@ -287,7 +287,7 @@ function ExpenseForm({ onClose, onSave }) {
             <label>{t("selectCategory")}</label>
             <div className="cat-grid">
               {cats.map(c => {
-                const m = ECAT[c]; const on = cat === c;
+                const m = catMap[c]; const on = cat === c;
                 return (
                   <button key={c} className={"cat-opt " + (on ? "on" : "")} style={on ? { background: softBg(m.c), color: m.c } : undefined} onClick={() => setCat(c)}>
                     {React.createElement(Icon[m.ic], { style: { width: 18, height: 18 } })}<span>{t(c)}</span>
