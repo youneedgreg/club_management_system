@@ -33,18 +33,18 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done. Each phase is shippable.
 
 Port the look/feel from the prototype (`app.jsx`, `ui.jsx`, `icons.jsx`, screenshots in `black stars html/screens/`).
 
-- [ ] Define design tokens as CSS variables: gold palette, surfaces, text/faint, green/red/blue/violet, mpesa color, lines (dark + light themes)
-- [ ] Port typography (display font + body font) and base global styles
-- [ ] Theme provider: dark/light toggle, persisted (was `bs_theme` in localStorage), `data-theme` on `<html>`
-- [ ] Build icon set (port `icons.jsx`) or adopt `lucide-react` equivalents (star, dashboard, stock, income, expenses, pot, calendar, credit, banknote, staff, reports, settings, sparkles, etc.)
-- [ ] Reusable UI primitives (port `ui.jsx`): `Page`, `Card`, `CardTitle`, `Stat`, `Money`, `Chip`, `IcChip`, `Seg` (segmented control), `Toast`, `Modal`/`Sheet`, badges
-- [ ] Money/number formatting helpers (`money`, `moneyK`) — KES, thousands separators
-- [ ] Chart primitives: bar chart (`WeekBars`), sparkline (`Spark`), hourly bars, donut/category splits (use Recharts or hand-rolled SVG to match prototype)
-- [ ] **App shell layout:** desktop sidebar nav, mobile top bar, mobile bottom nav (4 primary + "More" sheet)
-- [ ] Nav config with badge counts (low-stock count, overdue-credit count)
-- [ ] Active-route highlighting + persisted last view; routing via App Router segments
-- [ ] Global "live" pill (open/close hours), search box, notifications bell, user/account chip
-- [ ] Responsive breakpoints verified against screenshots (`dash.png`, `dash2.png`, etc.)
+- [x] Define design tokens as CSS variables: gold palette, surfaces, text/faint, green/red/blue/violet, mpesa color, lines (dark + light themes)
+- [x] Port typography (display font + body font) and base global styles
+- [x] Theme provider: dark/light toggle, persisted (was `bs_theme` in localStorage), `data-theme` on `<html>`
+- [x] Build icon set (port `icons.jsx`) or adopt `lucide-react` equivalents (star, dashboard, stock, income, expenses, pot, calendar, credit, banknote, staff, reports, settings, sparkles, etc.)
+- [x] Reusable UI primitives (port `ui.jsx`): `Page`, `Card`, `CardTitle`, `Stat`, `Money`, `Chip`, `IcChip`, `Seg` (segmented control), `Toast`, `Modal`/`Sheet`, badges
+- [x] Money/number formatting helpers (`money`, `moneyK`) — KES, thousands separators
+- [x] Chart primitives: bar chart (`WeekBars`), sparkline (`Spark`), hourly bars, donut/category splits (use Recharts or hand-rolled SVG to match prototype)
+- [x] **App shell layout:** desktop sidebar nav, mobile top bar, mobile bottom nav (4 primary + "More" sheet)
+- [x] Nav config with badge counts (low-stock count, overdue-credit count)
+- [x] Active-route highlighting + persisted last view; routing via App Router segments
+- [x] Global "live" pill (open/close hours), search box, notifications bell, user/account chip
+- [x] Responsive breakpoints verified against screenshots (`dash.png`, `dash2.png`, etc.)
 
 ---
 
