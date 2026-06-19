@@ -50,13 +50,13 @@ Port the look/feel from the prototype (`app.jsx`, `ui.jsx`, `icons.jsx`, screens
 
 ## Phase 2 — Internationalization (EN / FR / AR + RTL)
 
-- [ ] Choose i18n approach (`next-intl` recommended for App Router) and wire middleware/locale routing
-- [ ] Port all translation strings from `i18n.js` (en/fr/ar) into message catalogs
-- [ ] Locale switcher component (flag, native name, English name) — persisted (was `bs_lang`)
-- [ ] Set `<html lang>` and `dir` (LTR/RTL) per locale; verify Arabic RTL layout
-- [ ] RTL-safe styles (use logical properties: `margin-inline`, `padding-inline`, etc.)
-- [ ] Translate role labels (supervisor, cashier, bartender, waiter, security, dj, MC, host) and category keys
-- [ ] Locale-aware number/date formatting
+- [x] Choose i18n approach (`next-intl`) and wire it — cookie-based locale (no URL prefix), SSR-translated
+- [x] Port all translation strings from `i18n.js` (en/fr/ar) into message catalogs (single source: `src/lib/i18n.ts`)
+- [x] Locale switcher component (flag, native name, English name) — persisted (now `NEXT_LOCALE` cookie)
+- [x] Set `<html lang>` and `dir` (LTR/RTL) per locale; verify Arabic RTL layout
+- [x] RTL-safe styles (use logical properties: `margin-inline`, `padding-inline`, etc.)
+- [x] Translate role labels (supervisor, cashier, bartender, waiter, security, dj, MC, host) and category keys
+- [x] Locale-aware number/date formatting
 
 ---
 
