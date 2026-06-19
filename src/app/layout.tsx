@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Providers } from "@/components/providers";
+import { getLocale, getMessages } from "next-intl/server";
+import { IntlProvider } from "@/components/intl-provider";
+import { ThemeProvider } from "@/components/providers";
 import { fontVariables } from "@/lib/fonts";
+import { I18N, type Locale } from "@/lib/i18n";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,24 +20,34 @@ export const viewport: Viewport = {
 };
 
 /**
- * Blocking script: apply persisted theme/language to <html> before paint to
- * avoid a flash. The Providers component keeps React state in sync afterwards.
+ * Blocking script: apply the persisted theme to <html> before paint to avoid a
+ * flash. Locale/direction are server-rendered from the cookie (below), so no
+ * client correction is needed for language.
  */
 const PRE_PAINT = `try{
   var t=localStorage.getItem('bs_theme')||'dark';
   document.documentElement.dataset.theme=t;
   if(t==='dark')document.documentElement.classList.add('dark');
-  var l=localStorage.getItem('bs_lang')||'en';
-  document.documentElement.lang=l;
-  document.documentElement.dir=l==='ar'?'rtl':'ltr';
 }catch(e){}`;
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const locale = (await getLocale()) as Locale;
+  const messages = await getMessages();
+  const dir = I18N[locale]._dir;
+
   return (
-    <html lang="en" dir="ltr" data-theme="dark" className={fontVariables} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={dir}
+      data-theme="dark"
+      className={fontVariables}
+      suppressHydrationWarning
+    >
       <body>
         <script dangerouslySetInnerHTML={{ __html: PRE_PAINT }} />
-        <Providers>{children}</Providers>
+        <IntlProvider locale={locale} messages={messages}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </IntlProvider>
       </body>
     </html>
   );
