@@ -1,13 +1,17 @@
 /**
  * Shared application types for Black Stars.
  *
- * Domain model types are added in Phase 3 (mirroring `black stars html/data.js`).
- * Prefer inferring DB row types from the Drizzle schema where possible, and keep
- * hand-written types here for cross-cutting concerns (money, roles, payment
- * methods, locales) that are not tied to a single table.
+ * The domain model lives in the Drizzle schema (`src/db/schema`); infer row
+ * types from there. Keep hand-written types here for cross-cutting concerns
+ * (money, payment methods, locales) that are not tied to a single table.
  */
 
-/** ISO 4217 minor-unit amount. All money in the app is KES. */
+/**
+ * A money amount in **whole KES shillings** (no sub-unit). KES has no
+ * practically-used minor unit — the prototype, M-Pesa and the `money()`/
+ * `moneyK()` helpers all work in whole shillings, and the database stores money
+ * as `bigint` shillings. See `docs/decisions/0002-money-storage.md`.
+ */
 export type Money = number;
 
 /** Supported UI locales. Arabic renders right-to-left. */

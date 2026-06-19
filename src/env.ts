@@ -18,8 +18,8 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
-    // --- Database: Neon Postgres (Phase 3) ---
-    DATABASE_URL: z.string().url().optional(),
+    // --- Database: Neon Postgres (Phase 3 — required) ---
+    DATABASE_URL: z.string().url(),
 
     // --- Auth: Neon Auth / Stack Auth (Phase 4) ---
     STACK_SECRET_SERVER_KEY: z.string().min(1).optional(),

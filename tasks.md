@@ -64,22 +64,22 @@ Port the look/feel from the prototype (`app.jsx`, `ui.jsx`, `icons.jsx`, screens
 
 Model the domain from `data.js`. All money in KES (store as integers/minor units or numeric).
 
-- [ ] Provision Postgres (Supabase or Neon via Vercel Marketplace); wire connection string
-- [ ] Set up ORM + migrations; seed script that loads the `data.js` dataset for dev
-- [ ] **Schema — core/meta:** `clubs` (name, tagline, location, owner, hours, currency, mpesa paybill)
-- [ ] **Schema — inventory:** `products`/`stock` (name, category, unit, onHand, par, cost, sell, supplier ref, delivered)
-- [ ] **Schema — sales:** `sales` (time, location/table, description, payment method, amount), `sale_items` (link to products), staff attribution
-- [ ] **Schema — categories:** income categories, expense categories (bar + kitchen)
-- [ ] **Schema — expenses:** `expenses` (label, category, amount, recurring, timestamp, domain=bar|kitchen)
-- [ ] **Schema — kitchen:** `kitchen_orders` (time, table, item, qty, amount, status: preparing/served), kitchen income/expense categories
-- [ ] **Schema — credit (Deni):** `credit_customers` (name, note, phone, balance, age/aging, lastPaid), `credit_payments`
-- [ ] **Schema — suppliers/payables:** `suppliers` (name, category, owed, lastOrder, dueDate, terms, phone, aging), `supplier_payments`
-- [ ] **Schema — staff:** `staff` (name, role, type: tonight|permanent|casual), `attendance` (status, clock-in), `staff_permanent` (salary, NHIF, NSSF, PAYE, advance, pay status), `staff_casuals` (dailyRate, daysWorked, deduction, advance, posLinked, posSales, commissionPct), `advances`
-- [ ] **Schema — lineup:** `bookings` (date, label, flagship, name, role, time, feeType fixed|pct, fee, pct, guest), `booking_payments` (amount, method, mpesa code, receipt, time)
-- [ ] **Schema — reporting aggregates:** nightly P&L snapshots, monthly trend (or compute via queries/materialized views)
-- [ ] Data-access layer: typed query functions / repositories per domain
-- [ ] Server-side aggregation helpers (tonight income, net position, payment mix, weekly P&L, margins) — mirror the in-app `reduce` logic from the prototype
-- [ ] Seed realistic dataset; verify counts/totals match prototype
+- [x] Provision Postgres (Supabase or Neon via Vercel Marketplace); wire connection string
+- [x] Set up ORM + migrations; seed script that loads the `data.js` dataset for dev
+- [x] **Schema — core/meta:** `clubs` (name, tagline, location, owner, hours, currency, mpesa paybill)
+- [x] **Schema — inventory:** `products`/`stock` (name, category, unit, onHand, par, cost, sell, supplier ref, delivered) + `stock_movements` ledger
+- [x] **Schema — sales:** `sales` (time, location/table, description, payment method, amount), `sale_items` (link to products), staff attribution
+- [x] **Schema — categories:** income categories, expense categories (bar + kitchen)
+- [x] **Schema — expenses:** `expenses` (label, category, amount, recurring, timestamp, domain=bar|kitchen)
+- [x] **Schema — kitchen:** `kitchen_orders` (time, table, item, qty, amount, status: preparing/served), kitchen income/expense categories
+- [x] **Schema — credit :** `credit_customers` (name, note, phone, balance, age/aging, lastPaid), `credit_payments`
+- [x] **Schema — suppliers/payables:** `suppliers` (name, category, owed, lastOrder, dueDate, terms, phone, aging), `supplier_payments`
+- [x] **Schema — staff:** `staff` (name, role, type: tonight|permanent|casual), `attendance` (status, clock-in), `staff_permanent` (salary, NHIF, NSSF, PAYE, advance, pay status), `staff_casuals` (dailyRate, daysWorked, deduction, advance, posLinked, posSales, commissionPct), `advances`, `pos_attributions` (POS feed)
+- [x] **Schema — lineup:** `lineup_nights` + `bookings` (date, label, flagship, name, role, time, feeType fixed|pct, fee, pct, guest), `booking_payments` (amount, method, mpesa code, receipt, time)
+- [x] **Schema — reporting aggregates:** nightly P&L snapshots, night stats, revenue-by-hour, income/expense-by-category, payment mix, top sellers, monthly trend
+- [x] Data-access layer: typed query functions / repositories per domain (`src/server/services`)
+- [x] Server-side aggregation helpers (tonight income, net position, payment mix, weekly P&L, margins) — mirror the in-app `reduce` logic from the prototype
+- [x] Seed realistic dataset; verify counts/totals match prototype (`pnpm db:verify` — 44/44)
 
 ---
 
