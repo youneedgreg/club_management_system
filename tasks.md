@@ -16,16 +16,16 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done. Each phase is shippable.
 
 ## Phase 0 — Project Foundation & Tooling
 
-- [ ] Scaffold Next.js app (`create-next-app`, App Router, TypeScript, ESLint, Tailwind, `src/` dir, alias `@/*`)
-- [ ] Configure `tsconfig` strict mode, path aliases
-- [ ] Set up ESLint + Prettier (+ Tailwind plugin) and a `format`/`lint` script
-- [ ] Set up Git hooks (lint-staged + husky) for pre-commit lint/format
-- [ ] Install `shadcn/ui` and initialize (theme tokens, `components.json`)
-- [ ] Add `.env.example` documenting every key (DB, auth, Resend, Twilio, Claude, M-Pesa)
-- [ ] Set up environment config loader with typed/validated env (e.g. `zod` + `@t3-oss/env-nextjs`)
-- [ ] Create folder structure: `app/`, `components/`, `lib/`, `db/`, `server/` (actions/services), `i18n/`, `types/`
-- [ ] Add base `README` dev instructions; wire `SERVICES_AND_COSTS.md` decisions into env setup
-- [ ] Decide and document: ORM (Drizzle vs Prisma), Auth (Clerk vs Supabase) — record in repo
+- [x] Scaffold Next.js app (`create-next-app`, App Router, TypeScript, ESLint, Tailwind, `src/` dir, alias `@/*`)
+- [x] Configure `tsconfig` strict mode, path aliases
+- [x] Set up ESLint + Prettier (+ Tailwind plugin) and a `format`/`lint` script
+- [x] Set up Git hooks (lint-staged + husky) for pre-commit lint/format
+- [x] Install `shadcn/ui` and initialize (theme tokens, `components.json`)
+- [x] Add `.env.example` documenting every key (DB, auth, Resend, Twilio, Claude, M-Pesa)
+- [x] Set up environment config loader with typed/validated env (e.g. `zod` + `@t3-oss/env-nextjs`)
+- [x] Create folder structure: `app/`, `components/`, `lib/`, `db/`, `server/` (actions/services), `i18n/`, `types/`
+- [x] Add base `README` dev instructions; wire `SERVICES_AND_COSTS.md` decisions into env setup
+- [x] Decide and document: ORM (Drizzle), Auth (Neon Auth / Stack Auth), DB (Neon) — recorded in `docs/decisions/0001-stack-foundations.md`
 
 ---
 
