@@ -1,4 +1,4 @@
-import { bigint, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 /**
  * Shared column builders. With `casing: "snake_case"` (see `drizzle.config.ts`)
@@ -17,8 +17,9 @@ export const pk = () => uuid().primaryKey().defaultRandom();
 export const money = () => bigint({ mode: "number" });
 
 /**
- * Audit columns spread into every table. `createdBy` is a nullable user id,
- * wired to real Stack Auth users in Phase 4 (who recorded this row).
+ * Audit columns spread into every table. `createdBy` is a nullable Neon Auth
+ * (Better Auth) user id — an opaque string, not a UUID — so it's `text` (who
+ * recorded this row; set by Server Actions from the session).
  */
 export const timestamps = {
   createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
@@ -26,11 +27,11 @@ export const timestamps = {
     .notNull()
     .defaultNow()
     .$onUpdate(() => new Date()),
-  createdBy: uuid(),
+  createdBy: text(),
 };
 
 /** Audit columns for append-only ledgers (no `updatedAt`). */
 export const ledgerStamps = {
   createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  createdBy: uuid(),
+  createdBy: text(),
 };

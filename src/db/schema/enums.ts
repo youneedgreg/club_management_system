@@ -59,3 +59,10 @@ export const bookingRoleEnum = pgEnum("booking_role", ["actDj", "actMc", "actHos
 
 /** Fixed fee vs percentage-of-night. */
 export const feeTypeEnum = pgEnum("fee_type", ["fixed", "pct"]);
+
+/**
+ * Club membership roles (authorization tiers). `owner` has full access;
+ * `manager` runs the floor but not money-owed/salaries/settings; `cashier`
+ * records sales/expenses only. See `club_members`.
+ */
+export const memberRoleEnum = pgEnum("member_role", ["owner", "manager", "cashier"]);

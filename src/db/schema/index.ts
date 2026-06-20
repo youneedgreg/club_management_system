@@ -5,6 +5,7 @@
  */
 export * from "./enums";
 export * from "./clubs";
+export * from "./members";
 export * from "./categories";
 export * from "./suppliers";
 export * from "./inventory";
