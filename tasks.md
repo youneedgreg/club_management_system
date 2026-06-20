@@ -131,13 +131,13 @@ Ref: `Dashboard` in `modules_a.jsx`, screenshots `dash.png` / `dash2.png`.
 
 Ref: `BarStock` in `modules_a.jsx`, `01-list.png`.
 
-- [ ] Stock table/grid: name, category, unit, onHand/par, cost, sell, supplier, delivered date
-- [ ] Low-stock highlighting + reorder suggestion (onHand < par); sidebar badge count
-- [ ] Category filters (spirits, beer, wine, soft, shisha, cigarettes)
-- [ ] Add / edit / adjust stock (receive delivery, set par, manual count) — server actions
-- [ ] Margin display (sell − cost) per item
-- [ ] Stock depletion driven by recorded sales (link sales → stock movements)
-- [ ] Reorder action that can draft a supplier order (ties into Payables/notifications later)
+- [x] Stock table/grid: name, category, unit, onHand/par, cost, sell, supplier, delivered date
+- [x] Low-stock highlighting + reorder suggestion (onHand < par); sidebar badge count
+- [x] Category filters (spirits, beer, wine, soft, shisha, cigarettes)
+- [x] Add / edit / adjust stock (receive delivery, set par, manual count) — server actions
+- [x] Margin display (sell − cost) per item
+- [ ] Stock depletion driven by recorded sales (link sales → stock movements) — _movement ledger + `adjustStock` `sale` primitive in place; sale trigger lands with Phase 7 sale form_
+- [ ] Reorder action that can draft a supplier order (ties into Payables/notifications later) — _reorder button confirms; draft-order persistence deferred to Payables (Phase 10)_
 
 ---
 
@@ -340,3 +340,7 @@ Ref: `SERVICES_AND_COSTS.md` §1.
 5. Phases **9, 10, 14, 15** (Kitchen, Lineup, Reports, Settings).
 6. Phases **16–18** (Notifications, Payments, AI) — paid integrations.
 7. Phases **19–20** (Hardening, Deploy).
+
+
+host linking guest
+bottles given for complimentary
