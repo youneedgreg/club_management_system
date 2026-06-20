@@ -1663,6 +1663,28 @@ html[data-theme="light"] .mobile-top .logo {
   padding: 48px 16px;
 }
 
+/* ---- Skeleton placeholders ---- */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+.skeleton {
+  display: block;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--line-2) 37%, var(--surface-2) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+  border-radius: var(--r-sm, 6px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
+
 /* Toast error variant (default toast is success/green) */
 .toast.toast-error {
   border-color: color-mix(in srgb, var(--red) 45%, var(--line-2));
