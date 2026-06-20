@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 import { Icon } from "@/components/icons";
 import { useT } from "@/components/providers";
+import { useToast } from "@/components/shell/toast";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth/client";
 
 type AuthResult = { error?: { message?: string } | null } | null | undefined;
@@ -14,6 +16,7 @@ type AuthResult = { error?: { message?: string } | null } | null | undefined;
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const { t } = useT();
   const router = useRouter();
+  const toast = useToast();
   const isSignUp = mode === "sign-up";
 
   const [name, setName] = useState("");
@@ -21,40 +24,45 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // "google" while redirecting to OAuth, "form" while submitting credentials.
+  const [pending, setPending] = useState<"form" | "google" | null>(null);
 
-  const onSuccess = () => {
-    router.push("/dashboard");
-    router.refresh();
+  const fail = (message: string) => {
+    setError(message);
+    toast(message, "error");
+    setBusy(false);
+    setPending(null);
   };
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setBusy(true);
+    setPending("form");
     setError(null);
     try {
       const res = (await (isSignUp
         ? authClient.signUp.email({ email, password, name })
         : authClient.signIn.email({ email, password }))) as AuthResult;
       if (res?.error) {
-        setError(res.error.message ?? t("authError"));
-        setBusy(false);
+        fail(res.error.message ?? t("authError"));
         return;
       }
-      onSuccess();
+      // Keep the spinner up through navigation — the dashboard streams its loader.
+      router.push("/dashboard");
+      router.refresh();
     } catch {
-      setError(t("authError"));
-      setBusy(false);
+      fail(t("authError"));
     }
   };
 
   const google = async () => {
     setBusy(true);
+    setPending("google");
     setError(null);
     try {
       await authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
     } catch {
-      setError(t("authError"));
-      setBusy(false);
+      fail(t("authError"));
     }
   };
 
@@ -119,7 +127,13 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
           </div>
         )}
 
-        <button className="btn gold" type="submit" disabled={busy} style={{ marginTop: 2 }}>
+        <button
+          className="btn gold"
+          type="submit"
+          disabled={busy}
+          style={{ marginTop: 2, display: "inline-flex", alignItems: "center", gap: 8 }}
+        >
+          {pending === "form" && <Spinner size={15} />}
           {isSignUp ? t("signUp") : t("signIn")}
         </button>
       </form>
@@ -133,7 +147,14 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         <span style={{ flex: 1, height: 1, background: "var(--line)" }} />
       </div>
 
-      <button className="btn ghost" type="button" onClick={google} disabled={busy}>
+      <button
+        className="btn ghost"
+        type="button"
+        onClick={google}
+        disabled={busy}
+        style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }}
+      >
+        {pending === "google" && <Spinner size={15} />}
         {t("continueWithGoogle")}
       </button>
 

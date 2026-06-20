@@ -453,10 +453,16 @@ export function Seg<T extends string>({
 }
 
 /* ---- Toast ---- */
-export function Toast({ msg }: { msg: ReactNode }) {
+export function Toast({
+  msg,
+  variant = "success",
+}: {
+  msg: ReactNode;
+  variant?: "success" | "error";
+}) {
   return (
-    <div className="toast">
-      <Icon.checkCircle /> {msg}
+    <div className={`toast${variant === "error" ? "toast-error" : ""}`}>
+      {variant === "error" ? <Icon.warn /> : <Icon.checkCircle />} {msg}
     </div>
   );
 }

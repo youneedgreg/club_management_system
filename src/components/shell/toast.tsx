@@ -4,10 +4,11 @@ import { createContext, useCallback, useContext, useRef, useState } from "react"
 import type { ReactNode } from "react";
 import { Toast } from "@/components/bs";
 
-type ToastFn = (msg: string) => void;
+type ToastVariant = "success" | "error";
+type ToastFn = (msg: string, variant?: ToastVariant) => void;
 const ToastContext = createContext<ToastFn | null>(null);
 
-/** Trigger a transient confirmation toast (auto-dismisses after ~2.2s). */
+/** Trigger a transient toast (auto-dismisses; ~2.2s success, ~4s error). */
 export function useToast(): ToastFn {
   const ctx = useContext(ToastContext);
   if (!ctx) throw new Error("useToast must be used within <ToastProvider>");
@@ -15,19 +16,19 @@ export function useToast(): ToastFn {
 }
 
 export function ToastProvider({ children }: { children: ReactNode }) {
-  const [msg, setMsg] = useState<string | null>(null);
+  const [state, setState] = useState<{ msg: string; variant: ToastVariant } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const toast = useCallback((m: string) => {
-    setMsg(m);
+  const toast = useCallback<ToastFn>((msg, variant = "success") => {
+    setState({ msg, variant });
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => setMsg(null), 2200);
+    timer.current = setTimeout(() => setState(null), variant === "error" ? 4000 : 2200);
   }, []);
 
   return (
     <ToastContext.Provider value={toast}>
       {children}
-      {msg && <Toast msg={msg} />}
+      {state && <Toast msg={state.msg} variant={state.variant} />}
     </ToastContext.Provider>
   );
 }

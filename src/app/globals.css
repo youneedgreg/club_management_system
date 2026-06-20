@@ -1645,3 +1645,28 @@ html[data-theme="light"] .mobile-top .logo {
     align-items: end;
   }
 }
+
+/* ---- Spinner / loaders (reusable) ---- */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin {
+  animation: spin 0.7s linear infinite;
+}
+.page-loader {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+}
+
+/* Toast error variant (default toast is success/green) */
+.toast.toast-error {
+  border-color: color-mix(in srgb, var(--red) 45%, var(--line-2));
+}
+.toast.toast-error svg {
+  color: var(--red);
+}

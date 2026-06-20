@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Icon } from "@/components/icons";
 import { useT } from "@/components/providers";
+import { Spinner } from "@/components/ui/spinner";
 import type { MemberRole } from "@/lib/auth/roles";
 import { authClient } from "@/lib/auth/client";
 import { DATA } from "@/lib/data";
@@ -64,7 +65,7 @@ export function AccountChip({ session }: { session?: ChipSession }) {
           title={t("signOut")}
           aria-label={t("signOut")}
         >
-          <Icon.logout />
+          {busy ? <Spinner size={15} /> : <Icon.logout />}
         </button>
       )}
     </div>
