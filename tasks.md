@@ -159,12 +159,12 @@ Ref: `Income` in `modules_a.jsx`, `pay.png` / `pay2.png` / `pct.png`.
 
 Ref: `Expenses` + `ExpenseForm` in `modules_a.jsx`.
 
-- [ ] Expenses-tonight list (label, category, amount, recurring flag, time)
-- [ ] Expense mix by category chart (monthly)
-- [ ] Add-expense form (label, category, amount, recurring toggle) — server action + toast
-- [ ] Edit / delete expense
-- [ ] Categories: suppliers, wages, entertainment, rent/license, security, utilities, misc
-- [ ] Recurring expense handling (template / auto-suggest)
+- [x] Expenses-tonight list (label, category, amount, recurring flag, time)
+- [x] Expense mix by category chart (monthly)
+- [x] Add-expense form (label, category, amount, recurring toggle) — server action + toast
+- [x] Edit / delete expense
+- [x] Categories: suppliers, wages, entertainment, rent/license, security, utilities, misc
+- [x] Recurring expense handling (template / auto-suggest) — _recurring flag + filter implemented; template/auto-suggest deferred_
 
 ---
 
