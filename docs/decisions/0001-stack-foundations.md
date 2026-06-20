@@ -27,6 +27,10 @@ our `types/`, reducing duplication.
 
 ### 2. Auth → Neon Auth (Stack Auth)
 
+> **Update (ADR 0003):** the Neon Auth vendor decision stands, but the SDK and
+> env keys changed — we now use `@neondatabase/auth` (Better Auth), not Stack
+> Auth. See [ADR 0003](./0003-auth-neon-better-auth.md).
+
 Keeps auth and the database with a single vendor: Neon Auth (powered by Stack
 Auth) provisions users and **syncs them into our Postgres** automatically, which
 simplifies the audit/attribution requirements (who recorded a payment/expense/

@@ -21,8 +21,11 @@ export const env = createEnv({
     // --- Database: Neon Postgres (Phase 3 — required) ---
     DATABASE_URL: z.string().url(),
 
-    // --- Auth: Neon Auth / Stack Auth (Phase 4) ---
-    STACK_SECRET_SERVER_KEY: z.string().min(1).optional(),
+    // --- Auth: Neon Auth (Better Auth SDK, @neondatabase/auth) (Phase 4) ---
+    // Base URL of your Neon Auth instance (Neon Console → Auth).
+    NEON_AUTH_BASE_URL: z.string().url().optional(),
+    // Secret for signing session cookies — min 32 chars (`openssl rand -base64 32`).
+    NEON_AUTH_COOKIE_SECRET: z.string().min(32).optional(),
 
     // --- Email: Resend (Phase 16) ---
     RESEND_API_KEY: z.string().min(1).optional(),
@@ -51,9 +54,8 @@ export const env = createEnv({
    * Client-exposed values. Must be prefixed with `NEXT_PUBLIC_`.
    */
   client: {
-    // --- Auth: Neon Auth / Stack Auth (Phase 4) ---
-    NEXT_PUBLIC_STACK_PROJECT_ID: z.string().min(1).optional(),
-    NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: z.string().min(1).optional(),
+    // Neon Auth's browser client proxies through this app's /api/auth route,
+    // so no NEXT_PUBLIC_ auth keys are needed.
 
     // --- App ---
     NEXT_PUBLIC_APP_URL: z.string().url().optional(),
@@ -65,7 +67,8 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
-    STACK_SECRET_SERVER_KEY: process.env.STACK_SECRET_SERVER_KEY,
+    NEON_AUTH_BASE_URL: process.env.NEON_AUTH_BASE_URL,
+    NEON_AUTH_COOKIE_SECRET: process.env.NEON_AUTH_COOKIE_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
@@ -80,8 +83,6 @@ export const env = createEnv({
     MPESA_SHORTCODE: process.env.MPESA_SHORTCODE,
     MPESA_PASSKEY: process.env.MPESA_PASSKEY,
     MPESA_CALLBACK_URL: process.env.MPESA_CALLBACK_URL,
-    NEXT_PUBLIC_STACK_PROJECT_ID: process.env.NEXT_PUBLIC_STACK_PROJECT_ID,
-    NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: process.env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
   },
 
