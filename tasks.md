@@ -145,13 +145,13 @@ Ref: `BarStock` in `modules_a.jsx`, `01-list.png`.
 
 Ref: `Income` in `modules_a.jsx`, `pay.png` / `pay2.png` / `pct.png`.
 
-- [ ] Income by hour chart + total
-- [ ] Income by category breakdown (spirits, wine, beer, shisha, soft, door/cover)
-- [ ] Payment mix (M-Pesa / cash / card) with % and amounts
-- [ ] Live sales feed with payment tags
-- [ ] **Record a sale** form: table/bar/door, items, amount, payment method, staff attribution
-- [ ] Auto-attribute sales to casual staff (POS feed → commission), see `posFeed`
-- [ ] Filter by date / shift; totals recompute server-side
+- [x] Income by hour chart + total
+- [x] Income by category breakdown (spirits, wine, beer, shisha, soft, door/cover)
+- [x] Payment mix (M-Pesa / cash / card) with % and amounts
+- [x] Live sales feed with payment tags
+- [x] **Record a sale** form: table/bar/door, items, amount, payment method, staff attribution
+- [x] Auto-attribute sales to casual staff (POS feed → commission), see `posFeed`
+- [x] Filter by date / shift; totals recompute server-side — _range (tonight/week/month) recomputes the headline chart + gross total server-side via searchParams; per-shift split not yet modelled_
 
 ---
 
