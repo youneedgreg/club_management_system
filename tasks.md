@@ -85,12 +85,12 @@ Model the domain from `data.js`. All money in KES (store as integers/minor units
 
 ## Phase 4 — Authentication & Authorization
 
-- [ ] Integrate Auth provider (Clerk or Supabase Auth); sign-in / sign-up flows
-- [ ] Protect app routes via middleware; redirect unauthenticated users
-- [ ] Roles & permissions model: owner/admin vs staff (cashier, supervisor) — gate sensitive modules (payables, staff salaries, settings)
-- [ ] User/account chip wired to real session (avatar, name, account menu, sign-out)
-- [ ] Multi-tenant scoping by `club` (future-proof for >1 venue)
-- [ ] Audit considerations: who recorded a payment / expense / advance
+- [x] Integrate Auth provider (Neon Auth · `@neondatabase/auth` / Better Auth); custom sign-in / sign-up flows + Google OAuth
+- [x] Protect app routes via `proxy.ts` (Next 16 middleware) + server-side guard in the `(app)` layout; redirect unauthenticated users
+- [x] Roles & permissions model: owner / manager / cashier (`club_members.role`) — gate sensitive modules (payables, staff salaries, settings) in nav + server-side `enforceModule`
+- [x] User/account chip wired to real session (avatar/initials, name, role, sign-out)
+- [x] Multi-tenant scoping by `club` (`club_members` → `requireMembership()` resolves clubId; first user bootstraps as owner)
+- [x] Audit considerations: who recorded a payment / expense / advance (`created_by` text columns + session user id ready; set by each module's Server Actions)
 
 ---
 
