@@ -12,14 +12,12 @@ import {
   Stat,
 } from "@/components/bs";
 import { Icon } from "@/components/icons";
-import { isAuthConfigured } from "@/lib/auth/server";
-import { requireMembership } from "@/lib/auth/session";
 import { DATA } from "@/lib/data";
 import { money, moneyK } from "@/lib/format";
 import { CAT, PAY } from "@/lib/meta";
+import { getActiveClubId } from "@/server/active-club";
 import {
   calc,
-  getDefaultClubId,
   getPaymentMix,
   getPreviousNightPnl,
   getRecentSales,
@@ -29,12 +27,6 @@ import {
   getTopSellers,
   listLowStock,
 } from "@/server/services";
-
-/** Session-scoped club, falling back to the seeded club before auth is wired. */
-async function activeClubId(): Promise<string> {
-  if (!isAuthConfigured) return getDefaultClubId();
-  return (await requireMembership()).clubId;
-}
 
 /** Sale timestamp → "HH:mm" in the venue's timezone (seed stores +03:00). */
 const saleTime = (at: Date): string =>
@@ -50,7 +42,7 @@ const chipClass = (method: string): string =>
 
 export default async function DashboardPage() {
   const t = await getTranslations();
-  const clubId = await activeClubId();
+  const clubId = await getActiveClubId();
   const date = await getTonightDate(clubId);
 
   const [pnl, prev, byHour, mix, sellers, recent, low] = await Promise.all([
