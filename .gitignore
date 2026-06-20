@@ -37,6 +37,10 @@ yarn-error.log*
 # drizzle — migrations AND meta (journal + snapshots) are committed so
 # `drizzle-kit generate`/`migrate` stay reproducible on a fresh clone.
 
+# local HTTPS dev certificates (mkcert / self-signed)
+/certs
+/certificates
+
 # vercel
 .vercel
 

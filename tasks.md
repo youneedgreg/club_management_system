@@ -94,12 +94,12 @@ Model the domain from `data.js`. All money in KES (store as integers/minor units
 
 **Provisioning & operational (Neon Auth — [api-only quick-start](https://neon.com/docs/auth/quick-start/nextjs-api-only)):**
 
-- [ ] Enable Auth in the Neon Console (Project → Branch → Auth → Configuration); copy the **Auth URL**
-- [ ] Set `NEON_AUTH_BASE_URL` (Auth URL) + `NEON_AUTH_COOKIE_SECRET` (`openssl rand -base64 32`) in `.env`
-- [ ] Configure the **Google** OAuth provider (client id/secret) in Neon Auth for "Continue with Google"
-- [ ] Disable public email sign-up in Neon Auth once the owner exists (keep registration closed / invite-only)
-- [ ] Smoke-test the flows: first sign-up → owner bootstrap, sign-in, sign-out, non-member → `/auth/no-access`
-- [ ] Dev over HTTPS for Safari testing: `next dev --experimental-https`
+- [x] Enable Auth in the Neon Console (Project → Branch → Auth → Configuration); copy the **Auth URL**
+- [x] Set `NEON_AUTH_BASE_URL` (Auth URL) + `NEON_AUTH_COOKIE_SECRET` (`openssl rand -base64 32`) in `.env`
+- [x] Configure the **Google** OAuth provider (client id/secret) in Neon Auth for "Continue with Google"
+- [ ] Disable public email sign-up in Neon Auth now the owner exists (keep registration closed / invite-only)
+- [x] Smoke-test the flows: first sign-up → owner bootstrap → `/dashboard` ✓ (sign-out + non-member → `/auth/no-access` still to verify)
+- [x] **Dev over HTTPS is required** (Neon Auth uses `__Secure-` cookies, dropped on http): `pnpm dev:https`
 
 **Phase 4 follow-ups (consumed by later phases):**
 

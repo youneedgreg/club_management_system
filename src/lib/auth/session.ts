@@ -31,8 +31,11 @@ export interface Membership {
 export const getCurrentUser = cache(async (): Promise<AuthUser | null> => {
   if (!auth) return null;
   try {
-    const res = (await auth.getSession()) as { data?: { user?: Partial<AuthUser> } | null } | null;
-    const u = res?.data?.user;
+    // Confirmed shape: { data: { session, user }, error }.
+    const { data } = (await auth.getSession()) as {
+      data?: { user?: Partial<AuthUser> } | null;
+    };
+    const u = data?.user;
     if (!u?.id) return null;
     return { id: u.id, email: u.email ?? null, name: u.name ?? null, image: u.image ?? null };
   } catch {

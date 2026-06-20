@@ -4,6 +4,9 @@ import { Shell } from "@/components/shell/shell";
 import { isAuthConfigured } from "@/lib/auth/server";
 import { requireMembership } from "@/lib/auth/session";
 
+// Session reads depend on cookies — required by the Neon Auth server SDK.
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({ children }: { children: ReactNode }) {
   // Before Neon Auth is provisioned, render the app unauthenticated (dev mode).
   if (!isAuthConfigured) return <Shell>{children}</Shell>;
