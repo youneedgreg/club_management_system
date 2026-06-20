@@ -123,6 +123,16 @@ export async function getCasualPayroll(clubId: string) {
   };
 }
 
+/** POS-linked casual staff as `{ id, name }` options (sale attribution). */
+export function listSaleStaff(clubId: string) {
+  return db
+    .select({ id: staff.id, name: staff.name })
+    .from(staffCasuals)
+    .innerJoin(staff, eq(staffCasuals.staffId, staff.id))
+    .where(and(eq(staff.clubId, clubId), eq(staffCasuals.posLinked, true)))
+    .orderBy(asc(staff.name));
+}
+
 // ----- POS attribution feed -----
 
 export function getPosFeed(clubId: string, businessDate: string) {
