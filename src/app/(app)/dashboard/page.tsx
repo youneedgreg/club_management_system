@@ -1,7 +1,5 @@
-"use client";
-
-/** Dashboard — ported from the prototype `Dashboard` (modules_a.jsx). */
-import { useRouter } from "next/navigation";
+/** Dashboard — live, session-scoped figures (ported from prototype `Dashboard`). */
+import { getTranslations } from "next-intl/server";
 import {
   BarChart,
   CardTitle,
@@ -14,24 +12,63 @@ import {
   Stat,
 } from "@/components/bs";
 import { Icon } from "@/components/icons";
-import { useT } from "@/components/providers";
+import { isAuthConfigured } from "@/lib/auth/server";
+import { requireMembership } from "@/lib/auth/session";
 import { DATA } from "@/lib/data";
 import { money, moneyK } from "@/lib/format";
 import { CAT, PAY } from "@/lib/meta";
+import {
+  calc,
+  getDefaultClubId,
+  getPaymentMix,
+  getPreviousNightPnl,
+  getRecentSales,
+  getRevenueByHour,
+  getTonightDate,
+  getTonightPnl,
+  getTopSellers,
+  listLowStock,
+} from "@/server/services";
 
-export default function DashboardPage() {
-  const { t } = useT();
-  const router = useRouter();
-  const go = (seg: string) => router.push("/" + seg);
+/** Session-scoped club, falling back to the seeded club before auth is wired. */
+async function activeClubId(): Promise<string> {
+  if (!isAuthConfigured) return getDefaultClubId();
+  return (await requireMembership()).clubId;
+}
 
-  const income = DATA.byHour.reduce((s, d) => s + d.v, 0);
-  const exp = DATA.expensesTonight.reduce((s, d) => s + d.amt, 0);
-  const net = income - exp;
-  const low = [...DATA.stock]
-    .filter((s) => s.onHand < s.par)
-    .sort((a, b) => a.onHand / a.par - b.onHand / b.par);
-  const avg = Math.round(income / DATA.tonight.doorEntries);
-  const maxUnits = Math.max(...DATA.topSellers.map((s) => s.units));
+/** Sale timestamp → "HH:mm" in the venue's timezone (seed stores +03:00). */
+const saleTime = (at: Date): string =>
+  at.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "Africa/Nairobi",
+  });
+
+const chipClass = (method: string): string =>
+  method === "mpesa" ? "mpesa" : method === "card" ? "blue" : "gold";
+
+export default async function DashboardPage() {
+  const t = await getTranslations();
+  const clubId = await activeClubId();
+  const date = await getTonightDate(clubId);
+
+  const [pnl, prev, byHour, mix, sellers, recent, low] = await Promise.all([
+    getTonightPnl(clubId, date),
+    getPreviousNightPnl(clubId, date),
+    getRevenueByHour(clubId, date, "bar"),
+    getPaymentMix(clubId, date),
+    getTopSellers(clubId, date),
+    getRecentSales(clubId, date, 6),
+    listLowStock(clubId),
+  ]);
+
+  const incomeDelta = prev ? calc.pctDelta(pnl.income, prev.income) : null;
+  const expenseDelta = prev ? calc.pctDelta(pnl.expenses, prev.expenses) : null;
+  const netDelta = prev ? calc.pctDelta(pnl.net, prev.net) : null;
+  const avg = pnl.footfall > 0 ? Math.round(pnl.income / pnl.footfall) : 0;
+  const maxUnits = Math.max(1, ...sellers.map((s) => s.units));
+  const topPay = mix[0];
 
   return (
     <Page>
@@ -47,9 +84,9 @@ export default function DashboardPage() {
             label={t("netPosition")}
             icon="star"
             color="var(--gold)"
-            value={net}
+            value={pnl.net}
             size={32}
-            delta={18}
+            delta={netDelta ?? undefined}
           />
           <div className="row" style={{ marginTop: 12, gap: 8 }}>
             <span className="chip gold">
@@ -62,10 +99,10 @@ export default function DashboardPage() {
             label={t("tonightIncome")}
             icon="income"
             color="var(--green)"
-            value={income}
+            value={pnl.income}
             size={28}
-            delta={12}
-            foot={t("vsYesterday")}
+            delta={incomeDelta ?? undefined}
+            foot={incomeDelta !== null ? t("vsYesterday") : undefined}
           />
         </div>
         <div className="card card-pad">
@@ -73,10 +110,10 @@ export default function DashboardPage() {
             label={t("tonightExpenses")}
             icon="expenses"
             color="var(--red)"
-            value={exp}
+            value={pnl.expenses}
             size={28}
-            delta={-4}
-            foot={t("vsYesterday")}
+            delta={expenseDelta ?? undefined}
+            foot={expenseDelta !== null ? t("vsYesterday") : undefined}
           />
         </div>
         <div className="card card-pad">
@@ -84,7 +121,7 @@ export default function DashboardPage() {
             label={t("entriesTonight")}
             icon="door"
             color="var(--gold-2)"
-            value={DATA.tonight.doorEntries}
+            value={pnl.footfall}
             cur={false}
             size={28}
           />
@@ -104,7 +141,7 @@ export default function DashboardPage() {
             color="var(--gold)"
             title={t("revenueByHour")}
             more={t("viewAll")}
-            onMore={() => go("income")}
+            href="/income"
           />
           <div className="between" style={{ marginBottom: 14 }}>
             <div>
@@ -115,39 +152,42 @@ export default function DashboardPage() {
                 className="val"
                 style={{ fontFamily: "var(--disp)", fontSize: 24, fontWeight: 600, marginTop: 4 }}
               >
-                <Money v={income} />
+                <Money v={pnl.income} />
               </div>
             </div>
-            <span className="chip">
-              <Icon.clock style={{ width: 13, height: 13 }} /> {t("peakHour")} ·{" "}
-              {DATA.tonight.peakHour}
-            </span>
+            {pnl.peakHour && (
+              <span className="chip">
+                <Icon.clock style={{ width: 13, height: 13 }} /> {t("peakHour")} · {pnl.peakHour}
+              </span>
+            )}
           </div>
-          <BarChart data={DATA.byHour} peakKey="12am" fmt={moneyK} />
+          <BarChart data={byHour.map((r) => ({ h: r.hour, v: r.amount }))} fmt={moneyK} />
         </div>
         <div className="card card-pad">
           <CardTitle icon="wallet" color="var(--mpesa)" title={t("paymentMix")} />
           <div className="row" style={{ gap: 18, alignItems: "center" }}>
             <Donut
-              data={DATA.paymentMix.map((p) => ({ value: p.v, color: PAY[p.key].c }))}
+              data={mix.map((p) => ({ value: p.amount, color: PAY[p.method].c }))}
               center={
-                <div>
-                  <div
-                    style={{ fontSize: 18, fontWeight: 700, color: "var(--mpesa)" }}
-                    className="num"
-                  >
-                    {DATA.paymentMix[0].pct}%
+                topPay ? (
+                  <div>
+                    <div
+                      style={{ fontSize: 18, fontWeight: 700, color: PAY[topPay.method].c }}
+                      className="num"
+                    >
+                      {Math.round(Number(topPay.pct))}%
+                    </div>
+                    <div style={{ fontSize: 10.5, color: "var(--faint)" }}>{t(topPay.method)}</div>
                   </div>
-                  <div style={{ fontSize: 10.5, color: "var(--faint)" }}>{t("mpesa")}</div>
-                </div>
+                ) : undefined
               }
             />
             <div style={{ flex: 1 }}>
               <Legend
-                data={DATA.paymentMix.map((p) => ({
-                  label: t(p.key),
-                  value: p.pct + "%",
-                  color: PAY[p.key].c,
+                data={mix.map((p) => ({
+                  label: t(p.method),
+                  value: Math.round(Number(p.pct)) + "%",
+                  color: PAY[p.method].c,
                 }))}
               />
             </div>
@@ -162,12 +202,12 @@ export default function DashboardPage() {
             color="var(--red)"
             title={t("lowStockAlerts")}
             more={t("stock")}
-            onMore={() => go("stock")}
+            href="/stock"
           />
           <div className="list">
-            {low.slice(0, 4).map((s, i) => (
-              <div className="li" key={i}>
-                <IcChip name={CAT[s.cat].ic} color={CAT[s.cat].c} />
+            {low.slice(0, 4).map((s) => (
+              <div className="li" key={s.id}>
+                <IcChip name={CAT[s.category].ic} color={CAT[s.category].c} />
                 <div className="gr">
                   <div className="t1">{s.name}</div>
                   <div style={{ marginTop: 6 }}>
@@ -193,11 +233,11 @@ export default function DashboardPage() {
             color="var(--gold)"
             title={t("topSellers")}
             more={t("income")}
-            onMore={() => go("income")}
+            href="/income"
           />
           <div className="list">
-            {DATA.topSellers.map((s, i) => (
-              <div className="li" key={i}>
+            {sellers.map((s, i) => (
+              <div className="li" key={s.id}>
                 <span
                   className="num"
                   style={{
@@ -210,9 +250,9 @@ export default function DashboardPage() {
                   {i + 1}
                 </span>
                 <div className="gr">
-                  <div className="t1">{s.name}</div>
+                  <div className="t1">{s.productName}</div>
                   <div style={{ marginTop: 6 }}>
-                    <Progress value={s.units} max={maxUnits} color={CAT[s.cat].c} h={5} />
+                    <Progress value={s.units} max={maxUnits} color={CAT[s.category].c} h={5} />
                   </div>
                 </div>
                 <div style={{ textAlign: "end" }}>
@@ -235,30 +275,28 @@ export default function DashboardPage() {
           color="var(--gold)"
           title={t("recentActivity")}
           more={t("viewAll")}
-          onMore={() => go("income")}
+          href="/income"
         />
         <div className="list">
-          {DATA.sales.slice(0, 6).map((s, i) => {
-            const p = PAY[s.pay];
+          {recent.map((s) => {
+            const p = PAY[s.paymentMethod];
             return (
-              <div className="li" key={i}>
+              <div className="li" key={s.id}>
                 <IcChip name={p.ic} color={p.c} />
                 <div className="gr">
-                  <div className="t1">{s.desc}</div>
+                  <div className="t1">{s.description}</div>
                   <div className="t2">
-                    {s.loc} · {s.t}
+                    {s.location} · {saleTime(s.occurredAt)}
                   </div>
                 </div>
                 <span
-                  className={
-                    "chip " + (s.pay === "mpesa" ? "mpesa" : s.pay === "card" ? "blue" : "gold")
-                  }
+                  className={"chip " + chipClass(s.paymentMethod)}
                   style={{ marginInlineEnd: 4 }}
                 >
-                  {t(s.pay)}
+                  {t(s.paymentMethod)}
                 </span>
                 <div className="amt pos">
-                  +<Money v={s.amt} />
+                  +<Money v={s.amount} />
                 </div>
               </div>
             );

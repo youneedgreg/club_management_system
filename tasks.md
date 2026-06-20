@@ -116,14 +116,14 @@ Model the domain from `data.js`. All money in KES (store as integers/minor units
 
 Ref: `Dashboard` in `modules_a.jsx`, screenshots `dash.png` / `dash2.png`.
 
-- [ ] Net position card (income − expenses) with delta vs yesterday + "floor is busy" chip
-- [ ] Tonight income, tonight expenses, entries (door) cards with deltas
-- [ ] Average spend per entry computation
-- [ ] Hourly revenue bar chart (`byHour`)
-- [ ] Top sellers list with unit bars (`topSellers`)
-- [ ] Low-stock alert list (sorted by onHand/par ratio) with quick link to Stock
-- [ ] Recent sales feed (newest first, payment-method tags)
-- [ ] Wire all figures to live DB queries (no static data)
+- [x] Net position card (income − expenses) with delta vs yesterday + "floor is busy" chip
+- [x] Tonight income, tonight expenses, entries (door) cards with deltas
+- [x] Average spend per entry computation
+- [x] Hourly revenue bar chart (`byHour`)
+- [x] Top sellers list with unit bars (`topSellers`)
+- [x] Low-stock alert list (sorted by onHand/par ratio) with quick link to Stock
+- [x] Recent sales feed (newest first, payment-method tags)
+- [x] Wire all figures to live DB queries (no static data)
 
 ---
 
