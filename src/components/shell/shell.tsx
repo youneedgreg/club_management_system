@@ -18,9 +18,18 @@ import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { ToastProvider } from "@/components/shell/toast";
 import { canAccess } from "@/lib/auth/roles";
 import { DATA } from "@/lib/data";
-import { NAV, PRIMARY, badgeVal } from "@/lib/nav";
+import { NAV, PRIMARY, badgeVal, type BadgeKey } from "@/lib/nav";
 
-export function Shell({ children, session }: { children: ReactNode; session?: ChipSession }) {
+export function Shell({
+  children,
+  session,
+  badges,
+}: {
+  children: ReactNode;
+  session?: ChipSession;
+  /** Live badge counts from the server; falls back to the static dataset. */
+  badges?: Partial<Record<BadgeKey, number>>;
+}) {
   const { t } = useT();
   const pathname = usePathname();
   const router = useRouter();
@@ -28,6 +37,10 @@ export function Shell({ children, session }: { children: ReactNode; session?: Ch
   const [sheet, setSheet] = useState(false);
 
   const view = pathname.split("/")[1] || "dashboard";
+
+  /** Live count when the server supplied one, else the static fallback. */
+  const badgeFor = (b?: BadgeKey): number =>
+    b && badges?.[b] !== undefined ? badges[b]! : badgeVal(b);
 
   // Hide modules the current role can't access (no role = auth not configured → show all).
   const nav = session ? NAV.filter((n) => canAccess(session.role, n.k)) : NAV;
@@ -68,7 +81,7 @@ export function Shell({ children, session }: { children: ReactNode; session?: Ch
           <nav className="navlist">
             {nav.map((n) => {
               const I = Icon[n.ic];
-              const b = badgeVal(n.badge);
+              const b = badgeFor(n.badge);
               const on = view === n.k;
               return (
                 <Link
@@ -152,7 +165,7 @@ export function Shell({ children, session }: { children: ReactNode; session?: Ch
           {PRIMARY.map((k) => {
             const n = NAV.find((x) => x.k === k)!;
             const I = Icon[n.ic];
-            const b = badgeVal(n.badge);
+            const b = badgeFor(n.badge);
             return (
               <Link
                 key={k}
