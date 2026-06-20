@@ -38,6 +38,14 @@ export const termsDays = (terms: string | null): number =>
 export const marginPct = (net: number, income: number): number =>
   income > 0 ? Math.round((net / income) * 100) : 0;
 
+/**
+ * Whole-percent change of `current` against `previous` (e.g. tonight vs
+ * yesterday). Returns `null` when there's no positive base to compare against,
+ * so callers can omit the delta rather than render a meaningless figure.
+ */
+export const pctDelta = (current: number, previous: number): number | null =>
+  previous > 0 ? Math.round(((current - previous) / previous) * 100) : null;
+
 // ----- Payroll -----
 
 export interface PermanentInput {

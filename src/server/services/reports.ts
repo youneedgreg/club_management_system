@@ -1,4 +1,4 @@
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, lt } from "drizzle-orm";
 
 import { db, schema } from "@/db/client";
 
@@ -58,6 +58,38 @@ export async function getTonightPnl(clubId: string, businessDate?: string): Prom
 /** Net position (income − expenses) for the dashboard hero card. */
 export async function getNetPosition(clubId: string, businessDate?: string): Promise<number> {
   return (await getTonightPnl(clubId, businessDate)).net;
+}
+
+export interface NightPnl {
+  income: number;
+  expenses: number;
+  net: number;
+}
+
+/**
+ * The previous trading night's P&L (most recent *open* night before
+ * `businessDate`), drawn from the nightly snapshots whose revenue/cost match
+ * tonight's live income/expenses. Powers the dashboard's "vs yesterday" deltas;
+ * `null` when there's no prior open night to compare against.
+ */
+export async function getPreviousNightPnl(
+  clubId: string,
+  businessDate: string,
+): Promise<NightPnl | null> {
+  const [prev] = await db
+    .select({ revenue: nightlySnapshots.revenue, cost: nightlySnapshots.cost })
+    .from(nightlySnapshots)
+    .where(
+      and(
+        eq(nightlySnapshots.clubId, clubId),
+        eq(nightlySnapshots.closed, false),
+        lt(nightlySnapshots.businessDate, businessDate),
+      ),
+    )
+    .orderBy(desc(nightlySnapshots.businessDate))
+    .limit(1);
+  if (!prev) return null;
+  return { income: prev.revenue, expenses: prev.cost, net: prev.revenue - prev.cost };
 }
 
 type Night = typeof nightlySnapshots.$inferSelect;
