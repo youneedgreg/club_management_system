@@ -161,7 +161,9 @@ export default async function DashboardPage() {
               </span>
             )}
           </div>
-          <BarChart data={byHour.map((r) => ({ h: r.hour, v: r.amount }))} fmt={moneyK} />
+          <BarChart
+            data={byHour.map((r) => ({ h: r.hour, v: r.amount, label: moneyK(r.amount) }))}
+          />
         </div>
         <div className="card card-pad">
           <CardTitle icon="wallet" color="var(--mpesa)" title={t("paymentMix")} />

@@ -268,7 +268,8 @@ export function BarChart({
   h = 130,
   fmt,
 }: {
-  data: { h: string; v: number }[];
+  /** `label` lets Server Components pass a pre-formatted value (no `fmt` fn). */
+  data: { h: string; v: number; label?: ReactNode }[];
   color?: string;
   peakKey?: string;
   h?: number;
@@ -300,7 +301,7 @@ export function BarChart({
               }}
               className="num hide-mobile"
             >
-              {fmt ? fmt(d.v) : d.v}
+              {d.label ?? (fmt ? fmt(d.v) : d.v)}
             </div>
             <div
               style={{
