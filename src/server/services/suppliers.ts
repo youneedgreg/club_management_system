@@ -1,10 +1,19 @@
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 import { db, schema } from "@/db/client";
 
 import { agingDays, sumBy, termsDays } from "./calc";
 
 const { suppliers } = schema;
+
+/** Suppliers for a club as `{ id, name }` options (e.g. stock form dropdown). */
+export function listSuppliers(clubId: string) {
+  return db
+    .select({ id: suppliers.id, name: suppliers.name })
+    .from(suppliers)
+    .where(eq(suppliers.clubId, clubId))
+    .orderBy(asc(suppliers.name));
+}
 
 export interface PayableRow {
   id: string;
