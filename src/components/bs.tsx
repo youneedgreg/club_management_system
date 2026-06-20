@@ -6,6 +6,7 @@
  */
 import { useId } from "react";
 import type { CSSProperties, ReactNode } from "react";
+import Link from "next/link";
 import { Icon, type IconName } from "@/components/icons";
 import { DATA } from "@/lib/data";
 import { money, softBg } from "@/lib/format";
@@ -70,12 +71,15 @@ export function CardTitle({
   title,
   more,
   onMore,
+  href,
 }: {
   icon?: IconName;
   color?: string;
   title: ReactNode;
   more?: ReactNode;
   onMore?: () => void;
+  /** Render the "more" affordance as a navigation link (for Server Components). */
+  href?: string;
 }) {
   const I = icon ? Icon[icon] : null;
   return (
@@ -86,11 +90,16 @@ export function CardTitle({
         </span>
       )}
       <h3>{title}</h3>
-      {more && (
-        <button className="more" onClick={onMore}>
-          {more} <Icon.chevRight />
-        </button>
-      )}
+      {more &&
+        (href ? (
+          <Link className="more" href={href}>
+            {more} <Icon.chevRight />
+          </Link>
+        ) : (
+          <button className="more" onClick={onMore}>
+            {more} <Icon.chevRight />
+          </button>
+        ))}
     </div>
   );
 }
