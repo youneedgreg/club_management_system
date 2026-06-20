@@ -9,16 +9,18 @@ import { Fragment, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { AccountChip, type ChipSession } from "@/components/auth/account-chip";
 import { Icon } from "@/components/icons";
 import { useT } from "@/components/providers";
 import { AiPanel } from "@/components/shell/ai-panel";
 import { LangSwitch } from "@/components/shell/lang-switch";
 import { ThemeToggle } from "@/components/shell/theme-toggle";
 import { ToastProvider } from "@/components/shell/toast";
+import { canAccess } from "@/lib/auth/roles";
 import { DATA } from "@/lib/data";
 import { NAV, PRIMARY, badgeVal } from "@/lib/nav";
 
-export function Shell({ children }: { children: ReactNode }) {
+export function Shell({ children, session }: { children: ReactNode; session?: ChipSession }) {
   const { t } = useT();
   const pathname = usePathname();
   const router = useRouter();
@@ -26,6 +28,9 @@ export function Shell({ children }: { children: ReactNode }) {
   const [sheet, setSheet] = useState(false);
 
   const view = pathname.split("/")[1] || "dashboard";
+
+  // Hide modules the current role can't access (no role = auth not configured → show all).
+  const nav = session ? NAV.filter((n) => canAccess(session.role, n.k)) : NAV;
 
   // Persist last view (for the root redirect) + reset scroll on navigation.
   useEffect(() => {
@@ -61,7 +66,7 @@ export function Shell({ children }: { children: ReactNode }) {
             </div>
           </div>
           <nav className="navlist">
-            {NAV.map((n) => {
+            {nav.map((n) => {
               const I = Icon[n.ic];
               const b = badgeVal(n.badge);
               const on = view === n.k;
@@ -81,13 +86,7 @@ export function Shell({ children }: { children: ReactNode }) {
             })}
           </nav>
           <div className="foot">
-            <button className="userchip">
-              <span className="avatar">D</span>
-              <div className="uc-txt">
-                <div style={{ fontSize: 13, fontWeight: 600 }}>{DATA.meta.owner}</div>
-                <div style={{ fontSize: 11, color: "var(--faint)" }}>{t("account")}</div>
-              </div>
-            </button>
+            <AccountChip session={session} />
           </div>
         </aside>
 
@@ -183,19 +182,21 @@ export function Shell({ children }: { children: ReactNode }) {
             <div className="sheet">
               <div className="grab" />
               <div className="sheet-grid">
-                {NAV.filter((n) => !PRIMARY.includes(n.k)).map((n) => {
-                  const I = Icon[n.ic];
-                  return (
-                    <button
-                      key={n.k}
-                      className={"sheet-item " + (view === n.k ? "on" : "")}
-                      onClick={() => go(n.href)}
-                    >
-                      <I />
-                      <span>{t(n.k)}</span>
-                    </button>
-                  );
-                })}
+                {nav
+                  .filter((n) => !PRIMARY.includes(n.k))
+                  .map((n) => {
+                    const I = Icon[n.ic];
+                    return (
+                      <button
+                        key={n.k}
+                        className={"sheet-item " + (view === n.k ? "on" : "")}
+                        onClick={() => go(n.href)}
+                      >
+                        <I />
+                        <span>{t(n.k)}</span>
+                      </button>
+                    );
+                  })}
               </div>
             </div>
           </Fragment>
