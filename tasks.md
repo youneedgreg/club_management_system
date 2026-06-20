@@ -92,6 +92,24 @@ Model the domain from `data.js`. All money in KES (store as integers/minor units
 - [x] Multi-tenant scoping by `club` (`club_members` → `requireMembership()` resolves clubId; first user bootstraps as owner)
 - [x] Audit considerations: who recorded a payment / expense / advance (`created_by` text columns + session user id ready; set by each module's Server Actions)
 
+**Provisioning & operational (Neon Auth — [api-only quick-start](https://neon.com/docs/auth/quick-start/nextjs-api-only)):**
+
+- [ ] Enable Auth in the Neon Console (Project → Branch → Auth → Configuration); copy the **Auth URL**
+- [ ] Set `NEON_AUTH_BASE_URL` (Auth URL) + `NEON_AUTH_COOKIE_SECRET` (`openssl rand -base64 32`) in `.env`
+- [ ] Configure the **Google** OAuth provider (client id/secret) in Neon Auth for "Continue with Google"
+- [ ] Disable public email sign-up in Neon Auth once the owner exists (keep registration closed / invite-only)
+- [ ] Smoke-test the flows: first sign-up → owner bootstrap, sign-in, sign-out, non-member → `/auth/no-access`
+- [ ] Dev over HTTPS for Safari testing: `next dev --experimental-https`
+
+**Phase 4 follow-ups (consumed by later phases):**
+
+- [ ] Owner-only **user management** screen: invite members, assign/change roles (replaces the first-user bootstrap) — Settings (Phase 15)
+- [ ] Pass `requireMembership().clubId` into every module's queries (scope reads/writes by club)
+- [ ] Set `created_by` from the session in each module's Server Actions (record/pay/advance) as they land
+- [ ] Evaluate the Neon Auth `users_sync` table (if exposed by this SDK) for joining auth users to club data
+- [ ] Email verification / password-reset flows if required by go-live
+- [ ] Re-validate the `@neondatabase/auth` integration when it reaches GA (currently pinned `0.4.2-beta`)
+
 ---
 
 ## Phase 5 — Dashboard Module
