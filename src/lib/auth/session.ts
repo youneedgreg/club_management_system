@@ -2,7 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 import { db, schema } from "@/db/client";
 
@@ -69,14 +69,18 @@ export const getMembership = cache(async (): Promise<Membership | null> => {
   const [club] = await db.select({ id: clubs.id }).from(clubs).limit(1);
   if (!club) return null;
 
-  // First user to arrive at an unclaimed club becomes its owner.
-  const [anyMember] = await db
+  // Claimed by someone else? (Exclude this user's own row so a concurrent
+  // bootstrap of *our* membership doesn't read as "already claimed".)
+  const [otherMember] = await db
     .select({ id: clubMembers.id })
     .from(clubMembers)
-    .where(eq(clubMembers.clubId, club.id))
+    .where(and(eq(clubMembers.clubId, club.id), ne(clubMembers.userId, user.id)))
     .limit(1);
-  if (anyMember) return null;
+  if (otherMember) return null; // pending invite
 
+  // First user to arrive at an unclaimed club becomes its owner. Insert is
+  // idempotent under the (club_id, user_id) unique index so concurrent first
+  // requests can't collide.
   const [created] = await db
     .insert(clubMembers)
     .values({
@@ -86,8 +90,17 @@ export const getMembership = cache(async (): Promise<Membership | null> => {
       email: user.email,
       displayName: user.name,
     })
+    .onConflictDoNothing({ target: [clubMembers.clubId, clubMembers.userId] })
     .returning({ clubId: clubMembers.clubId, role: clubMembers.role });
-  return created ?? null;
+  if (created) return created;
+
+  // Lost the race — our row already exists; read it back.
+  const [now] = await db
+    .select({ clubId: clubMembers.clubId, role: clubMembers.role })
+    .from(clubMembers)
+    .where(eq(clubMembers.userId, user.id))
+    .limit(1);
+  return now ?? null;
 });
 
 export interface ActiveSession {
